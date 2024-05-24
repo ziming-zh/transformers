@@ -107,8 +107,6 @@ jobs:
 
     # To run all tests for the nightly build
     fetch_all_tests:
-        requires:
-            - get_docker_image_tag
         working_directory: ~/transformers
         docker:
             - image: huggingface/transformers-consistency
@@ -133,8 +131,6 @@ jobs:
                   configuration_path: test_preparation/generated_config.yml
 
     check_code_quality:
-        requires:
-            - get_docker_image_tag
         working_directory: ~/transformers
         docker:
             - image: huggingface/transformers-quality
@@ -159,8 +155,6 @@ jobs:
             - run: python utils/check_doc_toc.py
 
     check_repository_consistency:
-        requires:
-            - get_docker_image_tag
         working_directory: ~/transformers
         docker:
             - image: huggingface/transformers-consistency
