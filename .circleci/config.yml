@@ -35,8 +35,6 @@ jobs:
 
     # Fetch the tests to run
     fetch_tests:
-        requires:
-            - get_docker_image_tag
         working_directory: ~/transformers
         docker:
             - image: huggingface/transformers-quality
