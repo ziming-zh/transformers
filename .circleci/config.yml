@@ -25,6 +25,8 @@ jobs:
 
     # Ensure running with CircleCI/huggingface
     get_docker_image_tag:
+        docker:
+            - image: python:3.10-slim
         parallelism: 1
         steps:
             - run: echo $CIRCLE_PROJECT_USERNAME
@@ -33,6 +35,8 @@ jobs:
 
     # Fetch the tests to run
     fetch_tests:
+        requires:
+            - get_docker_image_tag
         working_directory: ~/transformers
         docker:
             - image: huggingface/transformers-quality
