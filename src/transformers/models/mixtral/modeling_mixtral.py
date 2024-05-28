@@ -825,11 +825,13 @@ class MixtralSparseMoeBlock(nn.Module):
     and memory on padding.
     """
 
-    def __init__(self, config):
+    def __init__(self, config, specified_num_local_experts=None):
         super().__init__()
         self.hidden_dim = config.hidden_size
         self.ffn_dim = config.intermediate_size
         self.num_experts = config.num_local_experts
+        if specified_num_local_experts is not None:
+          self.num_experts = specified_num_local_experts
         self.top_k = config.num_experts_per_tok
 
         # gating
@@ -887,7 +889,10 @@ class MixtralDecoderLayer(nn.Module):
         self.hidden_size = config.hidden_size
 
         self.self_attn = MIXTRAL_ATTENTION_CLASSES[config._attn_implementation](config, layer_idx)
-
+        if isinstance(config.num_local_experts, int):
+          self.block_sparse_moe = MixtralSparseMoeBlock(config)
+        else:
+          self.block_sparse_moe = MixtralSparseMoeBlock(config,8-config.num_local_experts[layer_idx])
         self.block_sparse_moe = MixtralSparseMoeBlock(config)
         self.input_layernorm = MixtralRMSNorm(config.hidden_size, eps=config.rms_norm_eps)
         self.post_attention_layernorm = MixtralRMSNorm(config.hidden_size, eps=config.rms_norm_eps)
